@@ -1,6 +1,59 @@
-#root {
+/*#root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}*/
+/* Contenedor principal de toda la aplicación */
+.app-container {
+max-width: 400px; /* ancho tipo app móvil */
+margin: 20px auto; /* centra la app en la pantalla */
+font-family: sans-serif;
 }
+/* Título grande  */
+.app-title {
+text-align: center;
+color: #008037; /* verde SENA */
+margin-bottom: 20px;
+}
+/* Texto pequeño bajo el título */
+.app-subtitle {
+text-align: center;
+font-size: 14px;
+color: #555;
+margin-top: 0;
+margin-bottom: 16px;
+}
+/* Tarjeta de cada contacto */
+.card-contacto {
+border: 1px solid gray;
+background-color: #f9f9f9;
+padding: 10px;
+margin: 5px 0;
+border-radius: 8px;
+}
+/* Nombre del contacto dentro de la tarjeta */
+.card-nombre {
+margin: 0 0 6px 0;
+font-size: 16px;
+font-weight: bold;
+}
+/* Líneas de información (teléfono, correo) */
+.card-linea {
+margin: 4px 0;
+font-size: 14px;
+}
+/* Etiqueta del contacto (por ejemplo &quot;Instructor&quot;, &quot;Cliente&quot;, &quot;Compañera&quot;) */
+.card-etiqueta {
+margin: 4px 0;
+font-size: 12px;
+color: green;
+}
+/* Nota final al pie (&quot;Versión 0.1...&quot;) */
+.app-nota {
+font-size: 12px;
+text-align: center;
+margin-top: 30px;
+color: #888;
+}
+ 
