@@ -14,10 +14,14 @@ margin: 0;
 color: var(--gris);
 }
 .app-container {
-max-width: 700px;
-margin: 2rem auto;
-padding: 0 1rem;
-  background-color: #ff0000;;
+  /* Define el ancho máximo del contenedor en 700px para que no sea muy ancho */
+  max-width: 700px;
+  /* Centra el contenedor horizontalmente con márgenes automáticos y 2rem de margen arriba/abajo */
+  margin: 2rem auto;
+  /* Agrega relleno interno de 1rem en los lados para separación del contenido */
+  padding: 0 1rem;
+  /* Color de fondo: violeta claro (#F3E8FF) */
+  background-color:#F3E8FF;;
 }
 .app-title {
 text-align: center;
