@@ -1,89 +1,97 @@
-import { useState, useEffect } from "react";
-import "./App.css";
+// Importamos React y hooks
+import { useEffect, useState } from "react";
+
+// Importamos funciones de la API
+import {
+  listarContactos,
+  crearContacto,
+  eliminarContactoPorId,
+} from "./api";
+
+// Importamos la configuración global de la app
+import { APP_INFO } from "./config";
+
 import FormularioContacto from "./components/FormularioContacto";
 import ContactoCard from "./components/ContactoCard";
 
 export default function App() {
-
-  const obtenerContactos = () => {
-    try {
-      const datos = localStorage.getItem("contactos");
-      return datos ? JSON.parse(datos) : [];
-    } catch {
-      return [];
-    }
-  };
-
-  const [contactos, setContactos] = useState(obtenerContactos);
+  const [contactos, setContactos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    localStorage.setItem("contactos", JSON.stringify(contactos));
-  }, [contactos]);
+    const cargarContactos = async () => {
+      try {
+        const data = await listarContactos();
+        setContactos(data);
+      } catch (err) {
+        console.error(err);
+        setError("No se pudo cargar la lista de contactos");
+      } finally {
+        setCargando(false);
+      }
+    };
 
-  const agregarContacto = (nuevo) => {
-    const existe = contactos.some(
-      (c) => c.correo === nuevo.correo
-    );
+    cargarContactos();
+  }, []);
 
-    if (existe) {
-      alert("Este correo ya está registrado");
-      return;
+  const agregarContacto = async (nuevo) => {
+    try {
+      const creado = await crearContacto(nuevo);
+      setContactos((prev) => [...prev, creado]);
+    } catch (err) {
+      console.error(err);
+      setError("No se pudo agregar el contacto");
     }
-
-    setContactos((prev) => [...prev, nuevo]);
   };
 
-  const eliminarContacto = (correo) => {
-    setContactos((prev) =>
-      prev.filter((c) => c.correo !== correo)
-    );
+  const eliminarContacto = async (id) => {
+    try {
+      await eliminarContactoPorId(id);
+      setContactos((prev) => prev.filter((c) => c.id !== id));
+    } catch (err) {
+      console.error(err);
+      setError("No se pudo eliminar el contacto");
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center p-6">
+    <div className="max-w-3xl mx-auto p-6">
 
-      <main className="w-full max-w-3xl bg-white rounded-3xl shadow-2xl p-10 text-center">
+      <header className="mb-8">
+        <p className="text-xs tracking-[0.3em] text-gray-500 uppercase">
+          Desarrollo Web ReactJS Ficha {APP_INFO.ficha}
+        </p>
 
-        <h1 className="text-4xl font-extrabold text-purple-700 mb-2">
-          Agenda ADSO v4
+        <h1 className="text-4xl font-extrabold text-gray-900 mt-2">
+          {APP_INFO.titulo}
         </h1>
 
-        <p className="text-lg font-medium text-indigo-600 mb-1">
-          Hola, soy Maicol 👋
+        <p className="text-sm text-gray-600 mt-1">
+          {APP_INFO.subtitulo}
         </p>
+      </header>
 
-        <p className="text-gray-500 mb-8">
-          Interfaz moderna con TailwindCSS
-        </p>
+      <FormularioContacto onAgregar={agregarContacto} />
 
-        {/* Formulario */}
-        <div className="mb-10">
-          <FormularioContacto onAgregar={agregarContacto} />
+      {error && (
+        <p className="text-red-500 mt-4">{error}</p>
+      )}
+
+      {cargando ? (
+        <p className="mt-4">Cargando contactos...</p>
+      ) : (
+        <div className="grid gap-4 mt-6">
+          {contactos.map((contacto) => (
+            <ContactoCard
+              key={contacto.id}
+              contacto={contacto}
+              onEliminar={eliminarContacto}
+            />
+          ))}
         </div>
+      )}
 
-        {/* Lista */}
-        <div className="space-y-4">
-          {contactos.length === 0 ? (
-            <div className="bg-gray-100 rounded-xl p-6 text-gray-400 font-medium shadow-inner">
-              No hay contactos registrados
-            </div>
-          ) : (
-            contactos.map((c) => (
-              <div
-                key={c.correo}
-                className="transition transform hover:scale-105 duration-200"
-              >
-                <ContactoCard
-                  {...c}
-                  onEliminar={eliminarContacto}
-                />
-              </div>
-            ))
-          )}
-        </div>
-
-      </main>
     </div>
   );
 }
-
