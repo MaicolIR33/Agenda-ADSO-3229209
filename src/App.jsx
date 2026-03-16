@@ -4,6 +4,7 @@ import {
   listarContactos,
   crearContacto,
   eliminarContactoPorId,
+  actualizarContacto
 } from "./api";
 
 import { APP_INFO } from "./config";
@@ -19,6 +20,8 @@ export default function App() {
 
   const [busqueda, setBusqueda] = useState("");
   const [ordenAsc, setOrdenAsc] = useState(true);
+
+  const [contactoEnEdicion, setContactoEnEdicion] = useState(null);
 
   useEffect(() => {
     cargarContactos();
@@ -56,12 +59,38 @@ export default function App() {
     }
   };
 
-  // FILTRAR
+  const editarContacto = (contacto) => {
+    setContactoEnEdicion(contacto);
+  };
+
+  const cancelarEdicion = () => {
+    setContactoEnEdicion(null);
+  };
+
+  const guardarEdicion = async (datosActualizados) => {
+    try {
+      const actualizado = await actualizarContacto(
+        contactoEnEdicion.id,
+        datosActualizados
+      );
+
+      setContactos((prev) =>
+        prev.map((c) =>
+          c.id === actualizado.id ? actualizado : c
+        )
+      );
+
+      setContactoEnEdicion(null);
+    } catch (err) {
+      console.error(err);
+      setError("No se pudo actualizar el contacto");
+    }
+  };
+
   const contactosFiltrados = contactos.filter((c) =>
     c.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
 
-  // ORDENAR
   const contactosOrdenados = [...contactosFiltrados].sort((a, b) => {
     if (ordenAsc) {
       return a.nombre.localeCompare(b.nombre);
@@ -89,9 +118,13 @@ export default function App() {
 
       </header>
 
-      <FormularioContacto onAgregar={agregarContacto} />
-
-      {/* BUSCADOR */}
+      <FormularioContacto
+        key={contactoEnEdicion?.id ?? "nuevo"}
+        onAgregar={agregarContacto}
+        onGuardar={guardarEdicion}
+        onCancelar={cancelarEdicion}
+        contactoEnEdicion={contactoEnEdicion}
+      />
 
       <div className="mt-6 flex gap-3">
 
@@ -129,6 +162,7 @@ export default function App() {
               key={contacto.id}
               contacto={contacto}
               onEliminar={eliminarContacto}
+              onEditar={editarContacto}
             />
           ))}
         </div>

@@ -1,24 +1,30 @@
 import { useState } from "react";
 
-export default function FormularioContacto({ onAgregar }) {
+export default function FormularioContacto({ onAgregar, onGuardar, onCancelar, contactoEnEdicion }) {
+
   const [form, setForm] = useState({
-    nombre: "",
-    telefono: "",
-    correo: "",
-    etiqueta: "",
-    empresa: "",
+    nombre: contactoEnEdicion?.nombre ?? "",
+    telefono: contactoEnEdicion?.telefono ?? "",
+    correo: contactoEnEdicion?.correo ?? "",
+    etiqueta: contactoEnEdicion?.etiqueta ?? "",
+    empresa: contactoEnEdicion?.empresa ?? "",
   });
 
   const onChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     if (!form.nombre || !form.telefono || !form.correo) return;
 
-    onAgregar(form);
+    if (contactoEnEdicion) {
+      await onGuardar(form);
+    } else {
+      await onAgregar(form);
+    }
 
     setForm({
       nombre: "",
@@ -31,83 +37,73 @@ export default function FormularioContacto({ onAgregar }) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-6">
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Nombre *
-          </label>
-          <input
-            className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
-            name="nombre"
-            placeholder="Ej: Camila Pérez"
-            value={form.nombre}
-            onChange={onChange}
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Teléfono *
-          </label>
-          <input
-            className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
-            name="telefono"
-            placeholder="Ej: 300 123 4567"
-            value={form.telefono}
-            onChange={onChange}
-          />
-        </div>
-
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Correo *
-        </label>
         <input
-          className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
-          name="correo"
-          placeholder="Ej: camila@sena.edu.co"
-          value={form.correo}
+          name="nombre"
+          placeholder="Nombre"
+          value={form.nombre}
           onChange={onChange}
+          className="border p-3 rounded"
         />
-      </div>
 
-      {/* NUEVO CAMPO EMPRESA */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Empresa
-        </label>
         <input
-          className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
-          name="empresa"
-          placeholder="Ej: Google"
-          value={form.empresa}
+          name="telefono"
+          placeholder="Teléfono"
+          value={form.telefono}
           onChange={onChange}
+          className="border p-3 rounded"
         />
+
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Etiqueta (opcional)
-        </label>
-        <input
-          className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
-          name="etiqueta"
-          placeholder="Ej: Trabajo"
-          value={form.etiqueta}
-          onChange={onChange}
-        />
-      </div>
+      <input
+        name="correo"
+        placeholder="Correo"
+        value={form.correo}
+        onChange={onChange}
+        className="border p-3 rounded w-full"
+      />
 
-      <button
-        type="submit"
-        className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-3 rounded-xl font-semibold shadow-md transition transform hover:scale-105"
-      >
-        Agregar contacto
-      </button>
+      <input
+        name="empresa"
+        placeholder="Empresa"
+        value={form.empresa}
+        onChange={onChange}
+        className="border p-3 rounded w-full"
+      />
+
+      <input
+        name="etiqueta"
+        placeholder="Etiqueta"
+        value={form.etiqueta}
+        onChange={onChange}
+        className="border p-3 rounded w-full"
+      />
+
+      <div className="flex gap-3">
+
+        <button
+          type="submit"
+          className="bg-purple-600 text-white py-3 px-4 rounded w-full"
+        >
+          {contactoEnEdicion ? "Guardar cambios" : "Agregar contacto"}
+        </button>
+
+        {/* BOTÓN CANCELAR — solo aparece cuando se está editando */}
+        {contactoEnEdicion && (
+          <button
+            type="button"
+            onClick={onCancelar}
+            className="text-white py-3 px-4 rounded w-full"
+            style={{ backgroundColor: "#4A64ED" }}
+          >
+            Cancelar
+          </button>
+        )}
+
+      </div>
 
     </form>
   );

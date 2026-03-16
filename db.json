@@ -21,6 +21,22 @@
       "correo": "maicol@sena.edu.co",
       "etiqueta": "trabajador ",
       "empresa": "Bancolombia SAS"
+    },
+    {
+      "id": "31f2",
+      "nombre": "maicol",
+      "telefono": "3205945067",
+      "correo": "maicol@sena.edu.co",
+      "etiqueta": "trabajador ",
+      "empresa": "Bancolombia SAS"
+    },
+    {
+      "nombre": "andres",
+      "telefono": "3135767890",
+      "correo": "andres@sena.edu.co",
+      "etiqueta": "Jefe",
+      "empresa": "Yamaha",
+      "id": "ec30"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
