@@ -1,4 +1,4 @@
-export default function ContactoCard({ contacto, onEliminar, onEditar }) {
+export default function ContactoCard({ contacto, onEliminar, onEditarClick }) {
 
   return (
     <div className="border p-4 rounded shadow-sm bg-white">
@@ -27,15 +27,13 @@ export default function ContactoCard({ contacto, onEliminar, onEditar }) {
 
       <div className="flex gap-2 mt-4">
 
-        {/* BOTÓN EDITAR */}
         <button
-          onClick={() => onEditar(contacto)}
+          onClick={() => onEditarClick(contacto)}
           className="bg-blue-500 text-white px-3 py-1 rounded"
         >
           Editar
         </button>
 
-        {/* BOTÓN ELIMINAR */}
         <button
           onClick={() => onEliminar(contacto.id)}
           className="bg-red-500 text-white px-3 py-1 rounded"
