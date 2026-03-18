@@ -1,6 +1,6 @@
 // Archivo: src/config.js
 
-export const API_BASE_URL = "https://agenda-adso-api-h4t0.onrender.com";
+export const API_BASE_URL = "https://agenda-adso-api-h4t0.onrender.com/contactos";
 
 export const APP_INFO = {
   ficha: "3229209",
