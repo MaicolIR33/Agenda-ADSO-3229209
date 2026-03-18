@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "./context/AuthContext";
 
 import {
   listarContactos,
@@ -11,8 +12,11 @@ import { APP_INFO } from "./config";
 
 import FormularioContacto from "./components/FormularioContacto";
 import ContactoCard from "./components/ContactoCard";
+import Login from "./pages/Login";
 
 export default function App() {
+
+  const { isAuthenticated, logout } = useAuth();
 
   const [contactos, setContactos] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -24,6 +28,11 @@ export default function App() {
   const [contactoEnEdicion, setContactoEnEdicion] = useState(null);
 
   const [vista, setVista] = useState("crear");
+
+  // SI NO ESTÁ AUTENTICADO → MOSTRAR LOGIN
+  if (!isAuthenticated) {
+    return <Login />
+  }
 
   // NAVEGACIÓN ENTRE VISTAS
   const irAVerContactos = () => {
@@ -118,7 +127,6 @@ export default function App() {
     }
   });
 
-  // NUEVO INDICADOR — último contacto agregado
   const ultimoContacto = contactos.length > 0
     ? contactos[contactos.length - 1].nombre
     : "—";
@@ -143,7 +151,7 @@ export default function App() {
           </div>
         </div>
 
-        <nav className="flex gap-2 ml-auto">
+        <nav className="flex gap-2 ml-auto items-center">
           <button
             onClick={irACrearContacto}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
@@ -163,6 +171,14 @@ export default function App() {
             }`}
           >
             👥 Contactos ({contactos.length})
+          </button>
+
+          {/* BOTÓN CERRAR SESIÓN */}
+          <button
+            onClick={logout}
+            className="px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-red-700 transition-colors"
+          >
+            🚪 Salir
           </button>
         </nav>
 
@@ -218,7 +234,7 @@ export default function App() {
                   </button>
                 </div>
 
-                {estaEnVistaContactos && contactoEnEdicion && (
+                {contactoEnEdicion && (
                   <div className="bg-white rounded-2xl shadow-lg p-6">
                     <h2 className="text-lg font-bold text-gray-800 mb-4">
                       ✏️ Editando contacto
@@ -307,7 +323,6 @@ export default function App() {
                   <span className="font-bold text-orange-500 text-lg">{contactosOrdenados.length}</span>
                 </div>
 
-                {/* NUEVO INDICADOR — último contacto agregado */}
                 <div className="border-t pt-3 flex justify-between items-center">
                   <span className="text-gray-600 text-sm">Último agregado</span>
                   <span className="font-bold text-pink-500 text-sm truncate max-w-[120px]">
